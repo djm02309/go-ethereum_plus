@@ -273,6 +273,13 @@ func (cw *contractWrapper) pushObject(vm *duktape.Context) {
 	})
 	vm.PutPropString(obj, "getInput")
 }
+//Sooyeon LEE 20190411 add struct abour fallback
+type forFallbackWrapper struct{
+	fbFlag vm.ForFallback
+}
+func (fw *forFallbackWrapper) pushObject(vm *duktape.Context){
+	//obj := vm.PushObject()
+}
 
 // Tracer provides an implementation of Tracer that evaluates a Javascript
 // function for each VM execution step.
@@ -289,6 +296,9 @@ type Tracer struct {
 	memoryWrapper   *memoryWrapper   // Wrapper around the VM memory
 	contractWrapper *contractWrapper // Wrapper around the contract object
 	dbWrapper       *dbWrapper       // Wrapper around the VM environment
+
+	//Sooyeon LEE 20190411 add Wrapper for fallback
+	forFallbackWrapper *forFallbackWrapper
 
 	pcValue     *uint   // Swappable pc value wrapped by a log accessor
 	gasValue    *uint   // Swappable gas value wrapped by a log accessor
@@ -320,6 +330,9 @@ func New(code string) (*Tracer, error) {
 		memoryWrapper:   new(memoryWrapper),
 		contractWrapper: new(contractWrapper),
 		dbWrapper:       new(dbWrapper),
+		//Sooyeon LEE 20190411 add wrapper in tracer
+		forFallbackWrapper:    new(forFallbackWrapper),
+
 		pcValue:         new(uint),
 		gasValue:        new(uint),
 		costValue:       new(uint),
@@ -432,6 +445,10 @@ func New(code string) (*Tracer, error) {
 	tracer.contractWrapper.pushObject(tracer.vm)
 	tracer.vm.PutPropString(logObject, "contract")
 
+	//Sooyeon LEE 20190411 add statement about fallback
+	tracer.forFallbackWrapper.pushObject(tracer.vm)
+	tracer.vm.PutPropString(logObject,"forFallback")
+
 	tracer.vm.PushGoFunction(func(ctx *duktape.Context) int { ctx.PushUint(*tracer.pcValue); return 1 })
 	tracer.vm.PutPropString(logObject, "getPC")
 
@@ -509,8 +526,10 @@ func (jst *Tracer) CaptureStart(from common.Address, to common.Address, create b
 	return nil
 }
 
+
+//Sooyeon LEE 20190410 add parameter fallbackFlag
 // CaptureState implements the Tracer interface to trace a single step of VM execution.
-func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, err error) error {
+func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback, err error) error {
 	if jst.err == nil {
 		// Initialize the context if it wasn't done yet
 		if !jst.inited {
@@ -527,6 +546,8 @@ func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost 
 		jst.memoryWrapper.memory = memory
 		jst.contractWrapper.contract = contract
 		jst.dbWrapper.db = env.StateDB
+		//Sooyeon LEE 20190410 add for fallback
+		jst.forFallbackWrapper.fbFlag =fallbackFlag
 
 		*jst.pcValue = uint(pc)
 		*jst.gasValue = uint(gas)
@@ -547,9 +568,11 @@ func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost 
 	return nil
 }
 
+
+//Sooyeon LEE 20190410 add argument
 // CaptureFault implements the Tracer interface to trace an execution fault
 // while running an opcode.
-func (jst *Tracer) CaptureFault(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, err error) error {
+func (jst *Tracer) CaptureFault(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback,  err error) error {
 	if jst.err == nil {
 		// Apart from the error, everything matches the previous invocation
 		jst.errorValue = new(string)
@@ -598,7 +621,9 @@ func (jst *Tracer) GetResult() (json.RawMessage, error) {
 
 		case *big.Int:
 			pushBigInt(val, jst.vm)
-
+		//Sooyeon LEE 20190411 add type for fallback 
+		case bool:
+			jst.vm.PushBoolean(val)
 		default:
 			panic(fmt.Sprintf("unsupported type: %T", val))
 		}

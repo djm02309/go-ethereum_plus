@@ -66,6 +66,8 @@ type StructLog struct {
 	Storage       map[common.Hash]common.Hash `json:"-"`
 	Depth         int                         `json:"depth"`
 	RefundCounter uint64                      `json:"refund"`
+	//Sooyeon LEE 20190410 add value in struct
+	FallbackFlag  ForFallback                 `json:"nonFallback"`
 	Err           error                       `json:"-"`
 }
 
@@ -99,8 +101,9 @@ func (s *StructLog) ErrorString() string {
 // if you need to retain them beyond the current call.
 type Tracer interface {
 	CaptureStart(from common.Address, to common.Address, call bool, input []byte, gas uint64, value *big.Int) error
-	CaptureState(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error
-	CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error
+	//Sooyeon LEE 20190410 add parameter fallbackFlag ForFallback
+	CaptureState(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, fallbackFlag ForFallback,  err error) error
+	CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, fallbackFlag ForFallback ,err error) error
 	CaptureEnd(output []byte, gasUsed uint64, t time.Duration, err error) error
 }
 
@@ -137,7 +140,8 @@ func (l *StructLogger) CaptureStart(from common.Address, to common.Address, crea
 // CaptureState logs a new structured log message and pushes it out to the environment
 //
 // CaptureState also tracks SSTORE ops to track dirty values.
-func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error {
+//Sooyeon LEE 20190410 add parameter fallbackFlag ForFallback 
+func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, fallbackFlag ForFallback, err error) error {
 	// check if already accumulated the specified number of logs
 	if l.cfg.Limit != 0 && l.cfg.Limit <= len(l.logs) {
 		return ErrTraceLimitReached
@@ -177,16 +181,21 @@ func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost ui
 	if !l.cfg.DisableStorage {
 		storage = l.changedValues[contract.Address()].Copy()
 	}
+	//Sooyeon LEE 20190410 add restore value to strunt log
+	var fallbackFlagforNow ForFallback
+	fallbackFlagforNow.IsNonFallBackEnforced = fallbackFlag.IsNonFallBackEnforced
+	fallbackFlagforNow.StartingNonFallback = fallbackFlag.StartingNonFallback
 	// create a new snaptshot of the EVM.
-	log := StructLog{pc, op, gas, cost, mem, memory.Len(), stck, storage, depth, env.StateDB.GetRefund(), err}
+	//Sooyeon LEE 20190410 add argument fallbackFlagforNow
+	log := StructLog{pc, op, gas, cost, mem, memory.Len(), stck, storage, depth, env.StateDB.GetRefund(), fallbackFlagforNow, err}
 
 	l.logs = append(l.logs, log)
 	return nil
 }
-
+//Sooyeon LEE add parameter
 // CaptureFault implements the Tracer interface to trace an execution fault
 // while running an opcode.
-func (l *StructLogger) CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error {
+func (l *StructLogger) CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int,fallbackFlag ForFallback, err error) error {
 	return nil
 }
 
@@ -215,7 +224,8 @@ func (l *StructLogger) Output() []byte { return l.output }
 // WriteTrace writes a formatted trace to the given writer
 func WriteTrace(writer io.Writer, logs []StructLog) {
 	for _, log := range logs {
-		fmt.Fprintf(writer, "%-16spc=%08d gas=%v cost=%v", log.Op, log.Pc, log.Gas, log.GasCost)
+		//Sooyeon LEE 20190410 add print statement for fallback values
+		fmt.Fprintf(writer, "%-16spc=%08d gas=%v cost=%v UsersetFallback=%v StartingNonFallback = %v", log.Op, log.Pc, log.Gas, log.GasCost, log.FallbackFlag.IsNonFallBackEnforced, log.FallbackFlag.StartingNonFallback)
 		if log.Err != nil {
 			fmt.Fprintf(writer, " ERROR: %v", log.Err)
 		}

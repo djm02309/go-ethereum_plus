@@ -41,9 +41,9 @@ func NewJSONLogger(cfg *vm.LogConfig, writer io.Writer) *JSONLogger {
 func (l *JSONLogger) CaptureStart(from common.Address, to common.Address, create bool, input []byte, gas uint64, value *big.Int) error {
 	return nil
 }
-
+//Sooyeon LEE add fallbackFlag ForFallback in CaptureState and CaptureFault
 // CaptureState outputs state information on the logger.
-func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, err error) error {
+func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback, err error) error {
 	log := vm.StructLog{
 		Pc:            pc,
 		Op:            op,
@@ -53,6 +53,8 @@ func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cos
 		Storage:       nil,
 		Depth:         depth,
 		RefundCounter: env.StateDB.GetRefund(),
+		//Sooyeon LEE 20190411 add fallback
+		FallbackFlag:   fallbackFlag,
 		Err:           err,
 	}
 	if !l.cfg.DisableMemory {
@@ -65,7 +67,7 @@ func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cos
 }
 
 // CaptureFault outputs state information on the logger.
-func (l *JSONLogger) CaptureFault(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, err error) error {
+func (l *JSONLogger) CaptureFault(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback, err error) error {
 	return nil
 }
 

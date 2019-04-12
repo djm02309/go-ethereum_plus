@@ -27,11 +27,12 @@ import (
 	"github.com/ethereum/go-ethereum/crypto/sha3"
 	"github.com/ethereum/go-ethereum/params"
 )
-/*SooYeon LEE 20190403 to use this keywords at other go file*/
-type forFallback struct{
-	IsNonFallBackEnforced	bool ;
-	StartingNonFallback bool ;
+/*Sooyeon LEE 20190403- to use this keywords at other go file*/
+type ForFallback struct{
+    IsNonFallBackEnforced   bool; 
+    StartingNonFallback bool;
 }
+
 var (
 	bigZero                  = new(big.Int)
 	tt255                    = math.BigPow(2, 255)
@@ -39,15 +40,10 @@ var (
 	errReturnDataOutOfBounds = errors.New("evm: return data out of bounds")
 	errExecutionReverted     = errors.New("evm: execution reverted")
 	errMaxCodeSizeExceeded   = errors.New("evm: max code size exceeded")
-	fallbackFlag  forFallback
+	fallbackFlag ForFallback
 	/* Eun-Sun Cho 2018.11.20 */
-	/*SooYeon LEE 20190403 isnonfallback~ change default false 
-	and add StartingNonFallback bool for StartNonfallback & EndNonfallback*/
-//	IsNonFallBackEnforced	bool  = false;
-//	StartingNonFallback bool =false;
+	//IsNonFallBackEnforced	bool  = true;
 )
-
-
 
 func opAdd(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 	x, y := stack.pop(), stack.peek()
@@ -899,35 +895,33 @@ func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memo
 }
 
 /* Eun-Sun Cho 2018.11.20 */
-/* execution SooYeon LEEntax for SetNonFallBack */
+/* execution syntax for SetNonFallBack */
 //func opSetNonFallBack(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
 //	IsNonFallBackEnforced = true;
 //	return nil, nil;
 //}
-/*SooYeon LEE 20190403 excute NonFallbackON keyword*/
-/*2019 04 08 add print statement about non fallback mode*/
-func opNonFallbackON(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	forFallback.IsNonFallBackEnforced = true;
-	fmt.Print("setting non fallback mode")
+/*SooYeon LEE 20190403 execute NonFallbackOn keyword*/
+/*2019.04.08 - add print statement about non fallback mode*/
+func opNonFallbackON(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack)([]byte, error){
+	fallbackFlag.IsNonFallBackEnforced = true;
+	fmt.Print("Set Non fallback mode")
 	return nil, nil;
 }
-func opNonFallbackOFF(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	forFallback.IsNonFallBackEnforced = false;
-	fmt.Print("unset non fallback mode")
-	return nil, nil;
+func opNonFallbackOFF(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack)([]byte, error){
+	fallbackFlag.IsNonFallBackEnforced = false;
+	fmt.Print("Unset Non fallback mode")
+	return nil,nil;
 }
-func opStartFallback(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	forFallback.StartingNonFallback = true;
+func opStartFallback(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack)([]byte, error){
+	fallbackFlag.StartingNonFallback = true;
 	fmt.Print("start non fallback")
 	return nil, nil;
 }
-func opEndFallback(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error) {
-	forFallback.StartingNonFallback = false;
+func opEndFallback(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack)([]byte, error){
+	fallbackFlag.StartingNonFallback = false;
 	fmt.Print("end non fallback")
 	return nil, nil;
 }
-/*SooYeon LEE 20190403 excute keywords*/
-
 // following functions are used by the instruction jump  table
 
 // make log instruction function

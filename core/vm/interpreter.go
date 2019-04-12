@@ -184,10 +184,8 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		pcCopy  uint64 // needed for the deferred Tracer
 		gasCopy uint64 // for Tracer to log gas remaining before execution
 		logged  bool   // deferred Tracer should ignore already logged steps
-		
-		/*SooYeon LEE 20190403 for use keywords*/
-		fallbackFlag  forFallback
-	)
+		//fallbackFlag ForFallback
+)
 	contract.Input = input
 
 	// Reclaim the stack as an int pool when the execution stops
@@ -197,9 +195,10 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		defer func() {
 			if err != nil {
 				if !logged {
-					in.cfg.Tracer.CaptureState(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth, err)
+					//Sooyeon LEE 20190410 add argument fallbackFlag
+					in.cfg.Tracer.CaptureState(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth,fallbackFlag, err)
 				} else {
-					in.cfg.Tracer.CaptureFault(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth, err)
+					in.cfg.Tracer.CaptureFault(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth,fallbackFlag, err)
 				}
 			}
 		}()
@@ -218,8 +217,7 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		// enough stack items available to perform the operation.
 		op = contract.GetOp(pc)
 		operation := in.cfg.JumpTable[op]
-		/* SooYeon LEE 2019.04.08 to prevent call fallback function, check both of keyword*/
-		if fallback.IsNonFallBackEnforced && fallback.StartingNonFallback {
+		if fallbackFlag.IsNonFallBackEnforced && fallbackFlag.StartingNonFallback{
 			return nil, fmt.Errorf("NonFallback option is on", nil)
 		}
 		if !operation.valid {
@@ -258,7 +256,8 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		}
 
 		if in.cfg.Debug {
-			in.cfg.Tracer.CaptureState(in.evm, pc, op, gasCopy, cost, mem, stack, contract, in.evm.depth, err)
+			//Sooyeon LEE 20190410 add argument fallbackFlag
+			in.cfg.Tracer.CaptureState(in.evm, pc, op, gasCopy, cost, mem, stack, contract, in.evm.depth, fallbackFlag, err)
 			logged = true
 		}
 
@@ -274,6 +273,7 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		if operation.returns {
 			in.returnData = res
 		}
+
 		switch {
 		case err != nil:
 			return nil, err
