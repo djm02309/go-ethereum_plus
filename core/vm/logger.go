@@ -225,7 +225,7 @@ func (l *StructLogger) Output() []byte { return l.output }
 func WriteTrace(writer io.Writer, logs []StructLog) {
 	for _, log := range logs {
 		//Sooyeon LEE 20190410 add print statement for fallback values
-		fmt.Fprintf(writer, "%-16spc=%08d gas=%v cost=%v UsersetFallback=%v StartingNonFallback = %v", log.Op, log.Pc, log.Gas, log.GasCost, log.FallbackFlag.IsNonFallBackEnforced, log.FallbackFlag.StartingNonFallback)
+		fmt.Fprintf(writer, "%-16spc=%08d gas=%v cost=%v UsersetFallback = %v StartingNonFallback = %v", log.Op, log.Pc, log.Gas, log.GasCost, log.FallbackFlag.IsNonFallBackEnforced, log.FallbackFlag.StartingNonFallback)
 		if log.Err != nil {
 			fmt.Fprintf(writer, " ERROR: %v", log.Err)
 		}

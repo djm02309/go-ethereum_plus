@@ -53,7 +53,7 @@ func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cos
 		Storage:       nil,
 		Depth:         depth,
 		RefundCounter: env.StateDB.GetRefund(),
-		//Sooyeon LEE 20190411 add fallback
+		//Sooyeon LEE 2019.04.11 add fallback
 		FallbackFlag:   fallbackFlag,
 		Err:           err,
 	}

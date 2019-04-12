@@ -979,6 +979,7 @@ func makeDup(size int64) executionFunc {
 	}
 }
 
+
 // make swap instruction function
 func makeSwap(size int64) executionFunc {
 	// switch n + 1 otherwise n would be swapped with n

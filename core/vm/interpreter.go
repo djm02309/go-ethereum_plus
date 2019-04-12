@@ -218,7 +218,7 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		op = contract.GetOp(pc)
 		operation := in.cfg.JumpTable[op]
 		if fallbackFlag.IsNonFallBackEnforced && fallbackFlag.StartingNonFallback{
-			return nil, fmt.Errorf("NonFallback option is on", nil)
+			return nil, fmt.Errorf("NonFallback option is on.", nil)
 		}
 		if !operation.valid {
 			return nil, fmt.Errorf("invalid opcode 0x%x", int(op))

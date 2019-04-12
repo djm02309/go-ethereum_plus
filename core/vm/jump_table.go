@@ -303,37 +303,38 @@ func newFrontierInstructionSet() [256]operation {
 		},
 		/* Eun-Sun Cho 2018.11.20 */
 		/* really need to handle in detail */
-		SETNONFALLBACK: {
+		/*SETNONFALLBACK: {
 			execute:       opSetNonFallBack,
 			gasCost:       gasSetNonFallBack,
-			validateStack: makeStackFunc(0, 1), /* todo !! */
-			valid:         true, 
-		},
-		/*Sooyeon LEE 20190403 to make prevent fallback*/
+			validateStack: makeStackFunc(0, 1), /* todo !! 
+			valid:         true,
+		},*/
+		/*Sooyeon LEE 2019.04.03 to make prevent fallback */
 		NONFALLBACKON: {
 			execute:       opNonFallbackON,
 			gasCost:       gasSetNonFallBack,
-			validateStack: makeStackFunc(0, 1), 
-			valid:         true, 
+			validateStack: makeStackFunc(0,1),
+			valid:         true,
 		},
 		NONFALLBACKOFF: {
-			execute:       opNonFallbackOFF,
-			gasCost:       gasSetNonFallBack,
-			validateStack: makeStackFunc(0, 1), 
-			valid:         true, 
+			execute:		opNonFallbackOFF,
+			gasCost:		gasSetNonFallBack,
+			validateStack:	makeStackFunc(0,1),
+			valid:			true,
 		},
 		STARTFALLBACK: {
-			execute:       opStartFallback,
-			gasCost:       gasSetNonFallBack,
-			validateStack: makeStackFunc(0, 1), 
-			valid:         true, 
+			execute:		opStartFallback,
+			gasCost:		gasSetNonFallBack,
+			validateStack: makeStackFunc(0,1),
+			valid:			true,
 		},
 		ENDFALLBACK: {
-			execute:       opEndFallback,
-			gasCost:       gasSetNonFallBack,
-			validateStack: makeStackFunc(0, 1), 
-			valid:         true, 
+			execute:		opEndFallback,
+			gasCost:		gasSetNonFallBack,
+			validateStack:	makeStackFunc(0,1),
+			valid:			true,
 		},
+		/*end*/
 		ADDRESS: {
 			execute:       opAddress,
 			gasCost:       constGasFunc(GasQuickStep),
