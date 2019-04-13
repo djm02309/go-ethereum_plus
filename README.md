@@ -6,13 +6,16 @@ Current version of EthVM+ is made from go-ethereum. Thus for classical ethereum 
 
 Following is the simplest example of the current version of EthVM+, 
 with the new keyword 0x25 NONFALLBACKON, 0x26 NONFALLBACKOFF, 0x27 STARTFALLBACK, 0x28 ENDFALLBACK .
+By using ./evm code, just execute opcode, not a contract. 
+0x26 and 0x28 is change flag value true to false. but defualt value is false, so it seems nothing changed.
+
 <pre> <code>
 ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 25  run 
 Set Non fallback mode0x
 #### TRACE ####
-NONFALLBACKON   pc=00000000 gas=10000000000 cost=0
+NONFALLBACKON   pc=00000000 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
-STOP            pc=00000001 gas=10000000000 cost=0
+STOP            pc=00000001 gas=10000000000 cost=0 UsersetFallback = true StartingNonFallback = false
 
 #### LOGS ####
 </code> </pre>
@@ -21,9 +24,9 @@ STOP            pc=00000001 gas=10000000000 cost=0
 ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 26  run 
 Unset Non fallback mode0x
 #### TRACE ####
-NONFALLBACKOFF   pc=00000000 gas=10000000000 cost=0
+NONFALLBACKOFF   pc=00000000 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
-STOP            pc=00000001 gas=10000000000 cost=0
+STOP            pc=00000001 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
 #### LOGS ####
 </code> </pre>
@@ -32,9 +35,9 @@ STOP            pc=00000001 gas=10000000000 cost=0
 ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 27  run 
 start non fallback0x
 #### TRACE ####
-STARTFALLBACK   pc=00000000 gas=10000000000 cost=0
+STARTFALLBACK   pc=00000000 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
-STOP            pc=00000001 gas=10000000000 cost=0
+STOP            pc=00000001 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = true
 
 #### LOGS ####
 </code> </pre>
@@ -43,9 +46,9 @@ STOP            pc=00000001 gas=10000000000 cost=0
 ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 28  run 
 end non fallback0x
 #### TRACE ####
-ENDFALLBACK   pc=00000000 gas=10000000000 cost=0
+ENDFALLBACK   pc=00000000 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
-STOP            pc=00000001 gas=10000000000 cost=0
+STOP          pc=00000001 gas=10000000000 cost=0 UsersetFallback = false StartingNonFallback = false
 
 #### LOGS ####
 </code> </pre>
@@ -55,6 +58,10 @@ The list of the modified Golang source files of go-ethereum are;
 2. core/vm/instructions.go
 3. core/vm/gas_table.go
 4. core/vm/jump_table.go
+
+5. core/vm/logger.go
+6. cmd/evm/json_logger.go
+7. eth/tracers/tracer.go
 
 If you have questions about technical details, please contact us(djm02309@gmail.com).
 
