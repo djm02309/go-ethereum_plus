@@ -18,7 +18,7 @@ STOP            pc=00000001 gas=10000000000 cost=0
 </code> </pre>
 
 <pre> <code>
-ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 25  run 
+ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 26  run 
 Unset Non fallback mode0x
 #### TRACE ####
 NONFALLBACKOFF   pc=00000000 gas=10000000000 cost=0
@@ -29,7 +29,7 @@ STOP            pc=00000001 gas=10000000000 cost=0
 </code> </pre>
 
 <pre> <code>
-ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 25  run 
+ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 27  run 
 start non fallback0x
 #### TRACE ####
 STARTFALLBACK   pc=00000000 gas=10000000000 cost=0
@@ -40,7 +40,7 @@ STOP            pc=00000001 gas=10000000000 cost=0
 </code> </pre>
 
 <pre> <code>
-ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 25  run 
+ethereum@ethereum-VirtualBox:~/go-ethereum/bin$./evm --debug --code 28  run 
 end non fallback0x
 #### TRACE ####
 ENDFALLBACK   pc=00000000 gas=10000000000 cost=0
