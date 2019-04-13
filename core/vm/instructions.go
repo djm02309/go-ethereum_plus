@@ -901,7 +901,7 @@ func opSuicide(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memo
 //	return nil, nil;
 //}
 /*SooYeon LEE 20190403 execute NonFallbackOn keyword*/
-/*2019.04.08 - add print statement about non fallback mode*/
+///*2019.04.08 - add print statement about non fallback mode*/
 func opNonFallbackON(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack)([]byte, error){
 	fallbackFlag.IsNonFallBackEnforced = true;
 	fmt.Print("Set Non fallback mode")

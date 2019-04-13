@@ -309,7 +309,7 @@ func newFrontierInstructionSet() [256]operation {
 			validateStack: makeStackFunc(0, 1), /* todo !! 
 			valid:         true,
 		},*/
-		/*Sooyeon LEE 2019.04.03 to make prevent fallback */
+		///*Sooyeon LEE 2019.04.03 to make prevent fallback */
 		NONFALLBACKON: {
 			execute:       opNonFallbackON,
 			gasCost:       gasSetNonFallBack,

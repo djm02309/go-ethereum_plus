@@ -438,7 +438,7 @@ var stringToOp = map[string]OpCode{
 	"SHA3":           SHA3,
 	/* Eun-Sun Cho 2018.11.20 */
 	//"SETNONFALLBACK":           SETNONFALLBACK,
-	//Sooyeon LEE 20190408 
+	//Sooyeon LEE 2019.04.08 
 	"NONFALLBACKON" : NONFALLBACKON ,
     "NONFALLBACKOFF" : NONFALLBACKOFF ,
     "STARTFALLBACK": STARTFALLBACK ,

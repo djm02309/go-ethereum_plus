@@ -569,7 +569,7 @@ func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost 
 }
 
 
-//Sooyeon LEE 20190410 add argument
+//Sooyeon LEE 2019.04.10 add argument
 // CaptureFault implements the Tracer interface to trace an execution fault
 // while running an opcode.
 func (jst *Tracer) CaptureFault(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback,  err error) error {

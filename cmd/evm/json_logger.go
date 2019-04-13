@@ -41,7 +41,7 @@ func NewJSONLogger(cfg *vm.LogConfig, writer io.Writer) *JSONLogger {
 func (l *JSONLogger) CaptureStart(from common.Address, to common.Address, create bool, input []byte, gas uint64, value *big.Int) error {
 	return nil
 }
-//Sooyeon LEE add fallbackFlag ForFallback in CaptureState and CaptureFault
+//Sooyeon LEE 2019.04.11 add fallbackFlag ForFallback in CaptureState and CaptureFault
 // CaptureState outputs state information on the logger.
 func (l *JSONLogger) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, fallbackFlag vm.ForFallback, err error) error {
 	log := vm.StructLog{

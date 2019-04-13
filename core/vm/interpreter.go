@@ -195,7 +195,7 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		defer func() {
 			if err != nil {
 				if !logged {
-					//Sooyeon LEE 20190410 add argument fallbackFlag
+					//Sooyeon LEE 2019.04.10 add argument fallbackFlag
 					in.cfg.Tracer.CaptureState(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth,fallbackFlag, err)
 				} else {
 					in.cfg.Tracer.CaptureFault(in.evm, pcCopy, op, gasCopy, cost, mem, stack, contract, in.evm.depth,fallbackFlag, err)
