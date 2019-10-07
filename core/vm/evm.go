@@ -181,7 +181,7 @@ func (evm *EVM) Interpreter() Interpreter {
 func (evm *EVM) Call(caller ContractRef, addr common.Address, input []byte, gas uint64, value *big.Int) (ret []byte, leftOverGas uint64, err error) {
 	println("evm.go/call function")
 
-		if evm.vmConfig.NoRecursion && evm.depth > 0 {
+	if evm.vmConfig.NoRecursion && evm.depth > 0 {
 		return nil, gas, nil
 	}
 
